@@ -8,16 +8,14 @@ mv /etc/xdg/autostart/update-notifier.desktop /etc/xdg/autostart/update-notifier
 if [ -f $_FIRST ] ; then
   _TAGS="$(cat $_FIRST)"
   if [ -z $_TAGS ] ; then
-    xterm -T "COMPLETANDO LA INSTALACION..." -e "sudo /usr/bin/migasfree-tags --set '' && rm -f $_FIRST && echo 'Proceso completado.' && sleep 3"
-  else
-    xterm -T "COMPLETANDO LA INSTALACION..." -e "sudo /usr/bin/migasfree-tags --set $_TAGS && rm -f $_FIRST && echo 'Proceso completado.' && sleep 3"
+    _TAGS="''"
   fi
+  xterm -T "COMPLETANDO LA INSTALACION..." -e "sudo /usr/bin/migasfree-tags --set $_TAGS && sudo /usr/bin/restrictedformats && rm -f $_FIRST && echo 'Proceso completado.' && sleep 5"
 else
   sudo /usr/bin/migasfree --update
 fi
 
-# Packages that require license confirmation
-apt-get install ubuntu-restricted-extras
-
 # run update-notifier
-su -c "/usr/bin/update-notifier" $_USER &
+if [ -f /usr/bin/update-notifier ] ; then
+  su -c "/usr/bin/update-notifier" $_USER &
+fi

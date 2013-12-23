@@ -1,0 +1,25 @@
+#!/bin/bash
+#https://help.ubuntu.com/community/RestrictedFormats#Easy_Install
+
+_text="
+Vitalinux no incluye por defecto software propietario. Sin
+embargo puede necesitar ejecutar formatos no libres, tales
+como DVD, MP3, Quicktime, y formatos de Windows Media.
+
+Nota: Las leyes sobre patentes y copyright operan de manera
+diferente dependiendo del país. Por favor, obtenga
+asesoramiento jurídico si no está seguro si una patente o
+restricción particular se aplica a un formato de medios que
+desea utilizar.
+
+¿Quiere instalar este software ahora?
+"
+
+zenity --question --title "Formatos restrictivos" --no-wrap --text "$_text"
+
+
+if [ $? == 0 ] ; then
+    apt-get install --force-yes --asume-yes ubuntu-restricted-extras
+    /usr/share/doc/libdvdread4/install-css.sh
+fi
+
