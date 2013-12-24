@@ -19,7 +19,7 @@ zenity --question --title "Formatos restrictivos" --no-wrap --text "$_text"
 
 
 if [ $? == 0 ] ; then
-    apt-get install --force-yes --asume-yes ubuntu-restricted-extras
+    apt-get install --force-yes --assume-yes ubuntu-restricted-extras
     /usr/share/doc/libdvdread4/install-css.sh
 fi
 
