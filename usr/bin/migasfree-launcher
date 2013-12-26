@@ -4,7 +4,7 @@ _USER=`python -c "from migasfree_client import utils;print utils.get_graphic_use
 
 function create_source_list(){
     rm /etc/apt/sources.list
-    cat /etc/apt/sources.list<<EOF
+    cat >>/etc/apt/sources.list<<EOF
 deb http://softlibre.unizar.es/ubuntu/archive precise main restricted
 deb http://softlibre.unizar.es/ubuntu/archive precise-updates main restricted
 deb http://softlibre.unizar.es/ubuntu/archive precise universe
