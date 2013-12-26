@@ -2,10 +2,24 @@
 _FIRST=/var/tmp/migasfree/first-tags.conf
 _USER=`python -c "from migasfree_client import utils;print utils.get_graphic_user(utils.get_graphic_pid()[0])"`
 
+function create_source_list(){
+    rm $_DEST/custom/etc/apt/sources.list
+    cat >> $_DEST/custom/etc/apt/sources.list<<EOF
+deb http://softlibre.unizar.es/ubuntu/archive precise main restricted
+deb http://softlibre.unizar.es/ubuntu/archive precise-updates main restricted
+deb http://softlibre.unizar.es/ubuntu/archive precise universe
+deb http://softlibre.unizar.es/ubuntu/archive precise-updates universe
+deb http://softlibre.unizar.es/ubuntu/archive precise multiverse
+deb http://softlibre.unizar.es/ubuntu/archive precise-updates multiverse
+EOF
+}
+
+
 # block update-notifier
 mv /etc/xdg/autostart/update-notifier.desktop /etc/xdg/autostart/update-notifier.desktop.migasfree-launcher >/dev/null || :
 
 if [ -f $_FIRST ] ; then
+  create_source_list
   _TAGS="$(cat $_FIRST)"
   if [ -z $_TAGS ] ; then
     _TAGS="''"

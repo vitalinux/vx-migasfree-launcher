@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.1-1) unstable; urgency=low
+
+  * regenerate source.list in first run
+
+ -- Alberto Gacías <alberto@migasfree.org>  Thu, 26 Dec 2013 20:24:47 +0200
+
 vx-migasfree-launcher (1.0-1) unstable; urgency=low
 
   * First release
