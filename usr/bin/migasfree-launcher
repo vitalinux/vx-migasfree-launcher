@@ -10,7 +10,7 @@ if [ -f $_FIRST ] ; then
   if [ -z $_TAGS ] ; then
     _TAGS="''"
   fi
-  xterm -iconic -T "COMPLETANDO LA INSTALACION..." -e "sudo /usr/bin/migasfree-tags --set $_TAGS && sudo /usr/bin/restrictedformats && rm -f $_FIRST && echo 'Proceso completado.' && sleep 5"
+  xterm -T "COMPLETANDO LA INSTALACION..." -e "sudo /usr/bin/migasfree-tags --set $_TAGS && sudo /usr/bin/restrictedformats && rm -f $_FIRST && echo 'Proceso completado.' && sleep 5"
 else
   sudo /usr/bin/migasfree --update
 fi
