@@ -24,9 +24,15 @@ if [ -f $_FIRST ] ; then
   if [ -z $_TAGS ] ; then
     _TAGS="''"
   fi
-  xterm -T "COMPLETANDO LA INSTALACION..." -e "sudo /usr/bin/migasfree-tags --set $_TAGS && sudo /usr/bin/restrictedformats && rm -f $_FIRST && echo 'Proceso completado.' && sleep 5"
+  if [ "$SUDO_UID" = "999" ] ; then # Se esta probando el LiveCD
+    /usr/bin/restrictedformats
+  else
+    xterm -iconic -T "COMPLETANDO LA INSTALACION..." -e "/usr/bin/migasfree-tags --set $_TAGS"
+    /usr/bin/restrictedformats
+    rm -f $_FIRST
+  fi
 else
-  sudo /usr/bin/migasfree --update
+  /usr/bin/migasfree --update
 fi
 
 # run update-notifier
