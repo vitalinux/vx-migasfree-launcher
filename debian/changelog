@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.3-1) unstable; urgency=low
+
+  * Corrected sintax error in restrictedformats (close #3)
+
+ -- Alberto Gacías <alberto@migasfree.org>  Thu, 29 Dec 2013 19:20:47 +0200
+
 vx-migasfree-launcher (1.2-1) unstable; urgency=low
 
   * Put in sudoers /usr/bin/migasfree-launcher
