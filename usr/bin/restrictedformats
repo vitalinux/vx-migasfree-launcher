@@ -17,6 +17,10 @@ desea utilizar.
 
 zenity --question --title "Formatos restrictivos" --no-wrap --text "$_text"
 if [ $? == 0 ] ; then
-    xterm -T "Instalando formatos restrictivos" -e "apt-get install --force-yes --assume-yes ubuntu-restricted-extras && /usr/share/doc/libdvdread4/install-css.sh"
+    # Aceptar mscorefonts-eula
+    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
+
+    # Instalar ubuntu-restricted-extras
+    xterm -iconic -T "Instalando formatos restrictivos" -e "apt-get install --force-yes --assume-yes ubuntu-restricted-extras && /usr/share/doc/libdvdread4/install-css.sh"
 fi
 
