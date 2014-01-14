@@ -15,6 +15,14 @@ EOF
 }
 
 
+# Check softlibre.unizar.es
+wget -O /tmp/softlibre.unizar.es softlibre.unizar.es
+if [ $? != 0 ] ; then
+  # No hay conexión al servidor softlibre.unizar.es y salimos.
+  exit 1
+fi
+
+
 # block update-notifier
 mv /etc/xdg/autostart/update-notifier.desktop /etc/xdg/autostart/update-notifier.desktop.migasfree-launcher >/dev/null || :
 
@@ -27,7 +35,7 @@ if [ -f $_FIRST ] ; then
   if [ "$SUDO_UID" = "999" ] ; then # Se esta probando el LiveCD
     /usr/bin/restrictedformats
   else
-    xterm -iconic -T "COMPLETANDO LA INSTALACION..." -e "/usr/bin/migasfree-tags --set $_TAGS"
+    xterm -iconic -T "Completando la instalación..." -e "/usr/bin/migasfree-tags --set $_TAGS"
     /usr/bin/restrictedformats
     rm -f $_FIRST
   fi
