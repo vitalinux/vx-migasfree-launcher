@@ -1,3 +1,10 @@
+vx-migasfree-launcher (1.4-1) unstable; urgency=low
+
+  * Accepted mscorefonts EULA
+  * Check connection to softlibre.unizar.es and not launch if is not present
+
+ -- Alberto Gacías <alberto@migasfree.org>  Tue, 14 Jan 2014 21:12:47 +0200
+
 vx-migasfree-launcher (1.3-1) unstable; urgency=low
 
   * Corrected sintax error in restrictedformats (close #3)
