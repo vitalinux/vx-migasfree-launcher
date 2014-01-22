@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.5-1) unstable; urgency=low
+
+  * Show mscorefonts EULA link
+
+ -- Alberto Gacías <alberto@migasfree.org>  Tue, 22 Jan 2014 16:57:47 +0200
+
 vx-migasfree-launcher (1.4-1) unstable; urgency=low
 
   * Accepted mscorefonts EULA

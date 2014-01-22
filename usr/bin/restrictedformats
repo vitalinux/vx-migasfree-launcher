@@ -12,7 +12,7 @@ asesoramiento jurídico si no está seguro si una patente o
 restricción particular se aplica a un formato de medios que
 desea utilizar.
 
-¿Quiere instalar este software ahora?
+¿Ha leído la <a href='http://www.microsoft.com/typography/fontpack/eula.htm'>Corefont EULA</a> y acepta instalar este software?
 "
 
 zenity --question --title "Formatos restrictivos" --no-wrap --text "$_text"
