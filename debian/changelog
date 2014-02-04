@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.6-1) unstable; urgency=low
+
+  * Open EULA as user and update repositories metadata.
+
+ -- Alberto Gacías <alberto@migasfree.org>  Tue, 04 Feb 2014 17:46:47 +0200
+
 vx-migasfree-launcher (1.5-1) unstable; urgency=low
 
   * Show mscorefonts EULA link
