@@ -12,15 +12,17 @@ asesoramiento jurídico si no está seguro si una patente o
 restricción particular se aplica a un formato de medios que
 desea utilizar.
 
-¿Ha leído la <a href='http://www.microsoft.com/typography/fontpack/eula.htm'>Corefont EULA</a> y acepta instalar este software?
+¿Ha leído la <a href=\"http://www.microsoft.com/typography/fontpack/eula.htm\">Corefont EULA</a> y acepta instalar este software?
 "
 
-zenity --question --title "Formatos restrictivos" --no-wrap --text "$_text"
+_cmd="zenity --question --title 'Formatos restrictivos' --no-wrap --text '$_text'"
+su -c "$_cmd" $SUDO_USER
 if [ $? == 0 ] ; then
     # Aceptar mscorefonts-eula
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
 
     # Instalar ubuntu-restricted-extras
+    apt-get update
     xterm -iconic -T "Instalando formatos restrictivos" -e "apt-get install --force-yes --assume-yes ubuntu-restricted-extras && /usr/share/doc/libdvdread4/install-css.sh"
 fi
 
