@@ -15,6 +15,17 @@ EOF
 }
 
 
+# Install broadcom 43xx without inet
+if [ -f $_FIRST ] ; then
+  lspci -n | awk '{print $3}' | grep "14e4:43"
+  if [ $? = 0 ] ; then
+    dpkg -i /opt/pkgs/b43-fwcutter_*.deb
+    dpkg -i /opt/pkgs/vx-broadcom-43_*.deb
+    sleep 10
+  fi
+fi
+
+
 # Check softlibre.unizar.es
 wget -O /tmp/softlibre.unizar.es softlibre.unizar.es
 if [ $? != 0 ] ; then
