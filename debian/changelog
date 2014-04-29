@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.8-1) unstable; urgency=low
+
+  * force upgrade from menu desktop
+
+ -- Alberto Gacías <alberto@migasfree.org>  Mon, 10 Mar 2014 21:52:47 +0200
+
 vx-migasfree-launcher (1.7-1) unstable; urgency=low
 
   * Install broadcom-43xx without inet
