@@ -1,0 +1,260 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+
+import gtk
+
+import sys, os, threading, locale
+
+import gobject
+
+import subprocess
+
+import webbrowser
+
+from migasfree_client.utils import get_config, get_hardware_uuid, get_mfc_computer_name
+from migasfree_client import settings
+
+import optparse
+
+
+gobject.threads_init()
+gtk.gdk.threads_init()
+
+encoding = locale.getpreferredencoding()
+utf8conv = lambda x : unicode(x, encoding).encode('utf8')
+
+
+CMD_UPGRADE = "sudo migasfree-launcher"
+CMD_FORCE_UPGRADE = "sudo migasfree --update --force-upgrade"
+CMD_LABEL = "migasfree-label"
+
+def on_button_clicked( button, win):
+    win.hide()
+
+def run():
+    if not sia.is_upgrading:
+        if options.force_upgrade:
+            sia.force_upgrade(None)
+        else:
+            sia.upgrade(None)
+
+class Timer():
+    timer=None
+    def __init__(self, interval):
+        self.interval=interval*3600 # hours
+
+    def start(self):
+        run()
+        self.timer=threading.Timer(self.interval, self.start)
+        self.timer.start()
+
+    def cancel(self):
+        self.timer.cancel()
+
+class Console(gtk.Window):
+    textview=gtk.TextView()
+    textbuffer = textview.get_buffer()
+    def __init__(self):
+        gtk.Window.__init__(self)
+        sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.textview.set_editable(False)
+        sw.add(self.textview)
+        self.set_title('migasfree console')
+        self.set_icon_name('migasfree')
+        self.resize(600,400)
+        self.set_property('deletable', False)
+        self.set_decorated(True)
+        self.set_border_width(10)
+        button = gtk.Button(u"Ocultar")
+        button.connect("clicked", on_button_clicked, self)
+        vbox = gtk.VBox()
+        vbox.pack_start(sw)
+        vbox.pack_start(button, False)
+        self.add(vbox)
+
+
+
+class SystrayIconApp:
+    tray = None
+    menu = None
+    menu_force_upgrade = None
+    is_upgrading =False
+
+
+    def __init__(self):
+        self.tray = gtk.StatusIcon()
+        self.tray.set_from_icon_name('migasfree')
+        self.tray.connect('popup-menu', self.on_right_click)
+        self.tray.connect('activate', self.on_left_click)
+        self.tray.set_tooltip(('migasfree'))
+
+    def on_right_click(self, icon, event_button, event_time):
+        self.make_menu(event_button, event_time)
+
+    def on_left_click(self, icon):
+        self.show_console(None)
+
+
+    def make_menu(self, event_button, event_time):
+        self.menu = gtk.Menu()
+
+
+        apps = gtk.MenuItem("Applications")
+        apps.show()
+        self.menu.append(apps)
+        apps.connect('activate', self.show_apps)
+
+        self.menu.append(gtk.SeparatorMenuItem())
+
+        self.menu_force_upgrade = gtk.MenuItem("Force upgrade")
+        self.menu_force_upgrade.set_sensitive( not self.is_upgrading )
+        self.menu_force_upgrade.show()
+        self.menu.append(self.menu_force_upgrade)
+        self.menu_force_upgrade.connect('activate', self.force_upgrade)
+
+        self.menu.append(gtk.SeparatorMenuItem())
+
+        labelid = gtk.MenuItem("Identification label")
+        labelid.show()
+        self.menu.append(labelid)
+        labelid.connect('activate', self.show_labelid)
+
+        if options.support:
+            support = gtk.MenuItem("Support")
+            support.show()
+            self.menu.append(support)
+            support.connect('activate', self.show_support)
+
+        self.menu.append(gtk.SeparatorMenuItem())
+
+        about = gtk.MenuItem("About")
+        about.show()
+        self.menu.append(about)
+        about.connect('activate', self.show_about)
+
+        self.menu.popup(None, None, gtk.status_icon_position_menu,
+                   event_button, event_time, self.tray)
+        self.menu.show_all()
+
+    def show_console(self, widget):
+        if console.get_property("visible"):
+            console.hide()
+        else:
+            console.show_all()
+
+    def show_labelid(self, widget):
+        os.system(CMD_LABEL)
+
+
+
+    def show_apps(self, widget):
+        webbrowser.open("https://apps.ubuntu.com/cat/")
+
+    def show_support(self, widget):
+        webbrowser.open(options.support)
+
+
+    def  show_about(self, widget):
+        about_dialog = gtk.AboutDialog()
+        about_dialog.set_destroy_with_parent (True)
+        about_dialog.set_icon_name ("migasfree-upgrade")
+        about_dialog.set_name('migasfree-tray')
+        about_dialog.set_version(_version)
+        about_dialog.set_copyright("(C) 2010-2014 migasfree team")
+        about_dialog.set_comments(("Tray for migasfree"))
+        about_dialog.set_authors(['Alberto Gacías','Jose Antonio Chavarría'])
+        about_dialog.set_website("http://migasfree.org/")
+        about_dialog.set_website_label("migasfree.org")
+        about_dialog.run()
+        about_dialog.destroy()
+
+
+    def upgrade(self, widget):
+        self.run(CMD_UPGRADE)
+
+    def force_upgrade(self, widget):
+        self.run(CMD_FORCE_UPGRADE)
+
+    def show_tags(self, widget):
+        self.run(CMD_TAGS)
+
+    def run(self, command):
+        thr = threading.Thread(target= self.read_output, args=(console.textview, console.textbuffer, command))
+        console.textbuffer.set_text("")
+        thr.start()
+
+
+    def read_output(self, view, buffer, command):
+
+        self.is_upgrading = True
+
+        self.tray.set_from_icon_name('migasfree-upgrade')
+        self.tray.set_tooltip('Upgrading System')
+
+        if command.startswith("gksudo"):
+            s = subprocess.Popen(["gksudo",command[7:]],stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        else:
+            s = subprocess.Popen(command.split(" "),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+
+        while True:
+            line = s.stdout.readline()
+            if not line and s.poll() != None:
+                break
+            line=line.replace("\033[92m","")
+            line=line.replace("\033[91m","")
+            line=line.replace("\033[32m","")
+            line=line.replace("\033[0m","")
+
+            gtk.gdk.threads_enter()
+            iter = buffer.get_end_iter()
+            buffer.place_cursor(iter)
+            buffer.insert(iter, utf8conv(line))
+            view.scroll_to_mark(buffer.get_insert(), 0.1)
+            gtk.gdk.threads_leave()
+
+        self.tray.set_from_icon_name('migasfree')
+        self.tray.set_tooltip('migasfree')
+
+        self.is_upgrading = False
+
+
+if __name__ == "__main__":
+
+
+    _program="migasfree-tray"
+    _version= "1.0"
+
+    parser = optparse.OptionParser(
+    description=_program,
+    prog=_program,
+    version=_version,
+    usage='%prog options'
+    )
+
+    parser.add_option("--force-upgrade", "-a", action="store_true",
+        help=_('Force Upgrade'),default=False)
+    parser.add_option("--interval","-i", type="int", dest="interval",default=24) # default 24 hours
+    parser.add_option("--support","-s", action="store", dest="support",default="")
+
+    options, arguments = parser.parse_args()
+
+    """
+    print "Force Upgrade: %s" % options.force_upgrade
+    print "Interval: %s" % options.interval
+    print "Support: %s" % options.support
+    """
+
+    console=Console()
+    sia = SystrayIconApp()
+
+    x=Timer(options.interval)
+    x.start()
+
+    gtk.main()
+
+
+
+
+
