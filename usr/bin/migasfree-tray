@@ -100,8 +100,8 @@ class SystrayIconApp:
     def make_menu(self, event_button, event_time):
         self.menu = gtk.Menu()
 
-
         apps = gtk.MenuItem("Applications")
+        apps.set_sensitive( False ) # TODO ""migasfree-apps""
         apps.show()
         self.menu.append(apps)
         apps.connect('activate', self.show_apps)
