@@ -2,16 +2,22 @@
 _FIRST=/var/tmp/migasfree/first-tags.conf
 _USER=`python -c "from migasfree_client import utils;print utils.get_graphic_user(utils.get_graphic_pid()[0])"`
 
+#_SERVER_SOURCE_LIST="http://softlibre.unizar.es/ubuntu/archive"
+_SERVER_SOURCE_LIST="http://archive.ubuntu.com/ubuntu"
+
 function create_source_list(){
     rm /etc/apt/sources.list
-    cat >>/etc/apt/sources.list<<EOF
-deb http://softlibre.unizar.es/ubuntu/archive precise main restricted
-deb http://softlibre.unizar.es/ubuntu/archive precise-updates main restricted
-deb http://softlibre.unizar.es/ubuntu/archive precise universe
-deb http://softlibre.unizar.es/ubuntu/archive precise-updates universe
-deb http://softlibre.unizar.es/ubuntu/archive precise multiverse
-deb http://softlibre.unizar.es/ubuntu/archive precise-updates multiverse
+    local _SRV=$1
+    cat >> /etc/apt/sources.list<<EOF
+deb $_SRV precise main restricted
+deb $_SRV precise-updates main restricted
+deb $_SRV precise universe
+deb $_SRV precise-updates universe
+deb $_SRV precise multiverse
+deb $_SRV precise-updates multiverse
+deb $_SRV precise-security restricted main multiverse universe
 EOF
+
 }
 
 
@@ -27,7 +33,7 @@ fi
 
 
 # Check softlibre.unizar.es
-wget -O /tmp/softlibre.unizar.es softlibre.unizar.es
+wget -O /tmp/softlibre.unizar.es softlibre.unizar.es &> /dev/null
 if [ $? != 0 ] ; then
   # No hay conexión al servidor softlibre.unizar.es y salimos.
   exit 1
@@ -35,10 +41,11 @@ fi
 
 
 # block update-notifier
-mv /etc/xdg/autostart/update-notifier.desktop /etc/xdg/autostart/update-notifier.desktop.migasfree-launcher >/dev/null || :
+mv /etc/xdg/autostart/update-notifier.desktop /etc/xdg/autostart/update-notifier.desktop.migasfree-launcher  &> /dev/null || :
 
 if [ -f $_FIRST ] ; then
-  create_source_list
+  create_source_list $_SERVER_SOURCE_LIST
+
   _TAGS="$(cat $_FIRST)"
   if [ -z $_TAGS ] ; then
     _TAGS="''"
@@ -46,9 +53,9 @@ if [ -f $_FIRST ] ; then
   if [ "$SUDO_UID" = "999" ] ; then # Se esta probando el LiveCD
     /usr/bin/restrictedformats
   else
-    xterm -iconic -T "Completando la instalación..." -e "/usr/bin/migasfree-tags --set $_TAGS"
+    /usr/bin/migasfree-tags --set $_TAGS
     /usr/bin/restrictedformats
-    rm -f $_FIRST
+    mv $_FIRST $_FIRST.save
   fi
 else
   /usr/bin/migasfree --update
