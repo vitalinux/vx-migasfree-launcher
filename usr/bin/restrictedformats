@@ -23,6 +23,6 @@ if [ $? == 0 ] ; then
 
     # Instalar ubuntu-restricted-extras
     apt-get update
-    xterm -iconic -T "Instalando formatos restrictivos" -e "apt-get install --force-yes --assume-yes ubuntu-restricted-extras && /usr/share/doc/libdvdread4/install-css.sh"
+    apt-get install --force-yes --assume-yes ubuntu-restricted-extras && /usr/share/doc/libdvdread4/install-css.sh
 fi
 
