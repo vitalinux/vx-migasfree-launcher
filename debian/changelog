@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.10-1) unstable; urgency=low
+
+  * generate sources.list always (closes #5)
+
+ -- Alberto Gacías <alberto@migasfree.org>  Thu, 08 May 2014 21:14:47 +0200
+
 vx-migasfree-launcher (1.9-1) unstable; urgency=low
 
   * Added migasfree-tray
