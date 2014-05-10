@@ -9,6 +9,6 @@ Homepage: https://github.com/agacias/vx-migasfree-launcher
 Package: vx-migasfree-launcher
 Architecture: all
 Pre-Depends: migasfree-client, sudo
-Depends: ${misc:Depends}, python
+Depends: ${misc:Depends}, python, python-appindicator
 Description: migasfree launcher
  migasfree launcher in graphic session
