@@ -24,9 +24,12 @@ EOF
 if [ -f $_FIRST ] ; then
   lspci -n | awk '{print $3}' | grep "14e4:43"
   if [ $? = 0 ] ; then
+    echo "----------------------------"
+    echo "Instalando broadcom-43XX ..."
     dpkg -i /opt/pkgs/b43-fwcutter_*.deb
     dpkg -i /opt/pkgs/vx-broadcom-43_*.deb
     sleep 10
+    
   fi
 fi
 
@@ -35,6 +38,8 @@ fi
 wget -O /tmp/server_repositories $_SERVER_SOURCE_LIST &> /dev/null
 if [ $? != 0 ] ; then
   # No hay conexión al servidor y salimos.
+  echo "--------------------------------"
+  echo "No hay conexion con $_SERVER_SOURCE_LIST. Se cancela el primer arranque."
   exit 1
 fi
 
@@ -51,14 +56,25 @@ if [ -f $_FIRST ] ; then
     _TAGS="''"
   fi
   if [ "$SUDO_UID" = "999" ] ; then # Se esta probando el LiveCD
+    echo "--------------------------------"
+    echo "Instalando formatos  restrictivos ..."
     /usr/bin/restrictedformats
   else
+    echo "--------------------------------"
+    echo "Configurando sabor: $_TAGS"
     /usr/bin/migasfree-tags --set $_TAGS
+    echo "--------------------------------"
+    echo "Instalando formatos  restrictivos ..."
     /usr/bin/restrictedformats
     mv $_FIRST $_FIRST.save
+    echo "--------------------------------"
+
   fi
 else
+  echo "--------------------------------"
+  echo "Actualizando el sistema ..."
   /usr/bin/migasfree --update
+  echo "--------------------------------"  
 fi
 
 # run update-notifier
