@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.12-1) unstable; urgency=low
+
+  * Bugfix: call migasfree-tags (closes #7)
+
+ -- Alberto Gacías <alberto@migasfree.org>  Sat, 10 May 2014 09:48:47 +0200
+
 vx-migasfree-launcher (1.11-1) unstable; urgency=low
 
   * Change StatusIcon to appindicator

@@ -29,7 +29,7 @@ if [ -f $_FIRST ] ; then
     dpkg -i /opt/pkgs/b43-fwcutter_*.deb
     dpkg -i /opt/pkgs/vx-broadcom-43_*.deb
     sleep 10
-    
+
   fi
 fi
 
@@ -53,7 +53,7 @@ create_source_list $_SERVER_SOURCE_LIST
 if [ -f $_FIRST ] ; then
   _TAGS="$(cat $_FIRST)"
   if [ -z $_TAGS ] ; then
-    _TAGS="''"
+    _TAGS='""'
   fi
   if [ "$SUDO_UID" = "999" ] ; then # Se esta probando el LiveCD
     echo "--------------------------------"
@@ -74,7 +74,7 @@ else
   echo "--------------------------------"
   echo "Actualizando el sistema ..."
   /usr/bin/migasfree --update
-  echo "--------------------------------"  
+  echo "--------------------------------"
 fi
 
 # run update-notifier
