@@ -234,9 +234,13 @@ class SystrayIconApp:
 
         s = subprocess.Popen(command.split(" "),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 
-        while True:
-            line = s.stdout.readline()
-            if not line and s.poll() != None:
+        while s.returncode == None:
+            try:
+              line = s.stdout.readline()
+            except:
+              pass
+ 	
+            if not line and s.poll()  != None:
                 break
             line=line.replace("\033[92m","")
             line=line.replace("\033[91m","")
