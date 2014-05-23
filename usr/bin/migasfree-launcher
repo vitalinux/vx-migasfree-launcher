@@ -2,6 +2,14 @@
 _FIRST=/var/tmp/migasfree/first-tags.conf
 _USER=`python -c "from migasfree_client import utils;print utils.get_graphic_user(utils.get_graphic_pid()[0])"`
 
+_PYTHON_CODE="from migasfree_client.utils import get_config
+from migasfree_client import settings
+config = get_config(settings.CONF_FILE, 'client')
+print config.get('server', 'localhost')
+"
+_SERVER=$(python -c "$_PYTHON_CODE")
+
+
 #_SERVER_SOURCE_LIST="http://softlibre.unizar.es/ubuntu/archive"
 _SERVER_SOURCE_LIST="http://archive.ubuntu.com/ubuntu"
 
@@ -28,21 +36,27 @@ if [ -f $_FIRST ] ; then
     echo "Instalando broadcom-43XX ..."
     dpkg -i /opt/pkgs/b43-fwcutter_*.deb
     dpkg -i /opt/pkgs/vx-broadcom-43_*.deb
-    sleep 10
-
   fi
 fi
 
 
-# Check Server
-wget -O /tmp/server_repositories $_SERVER_SOURCE_LIST &> /dev/null
-if [ $? != 0 ] ; then
-  # No hay conexión al servidor y salimos.
-  echo "--------------------------------"
-  echo "No hay conexion con $_SERVER_SOURCE_LIST. Se cancela el primer arranque."
-  exit 1
-fi
 
+# Wait inet connection (3 minutes max.)
+let _retries=0
+until wget -O /tmp/inet_connection $_SERVER &> /dev/null
+do
+    if [ $_retries -le 18 ] ; then
+      sleep 10 # 18*10" = 3 min.
+      let _retries=_retries+1
+      echo $_retries
+    else
+      # No hay conexión al servidor y salimos.
+      echo "--------------------------------"
+      echo "No hay conexion con $_SERVER_SOURCE_LIST. Se cancela el primer arranque."
+      exit 1
+    fi
+done
+rm /tmp/inet_connection
 
 # block update-notifier
 mv /etc/xdg/autostart/update-notifier.desktop /etc/xdg/autostart/update-notifier.desktop.migasfree-launcher  &> /dev/null || :
