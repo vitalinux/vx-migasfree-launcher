@@ -227,6 +227,10 @@ class SystrayIconApp:
 
     def read_output(self, view, buffer, command):
         self.is_upgrading = True
+        
+        # Lock logout session
+        os.system("gsettings set org.gnome.desktop.lockdown disable-log-out true")
+        
         self.make_menu()
         console.timeout_id = gobject.timeout_add(50, console.on_timeout, None)
 
@@ -242,6 +246,7 @@ class SystrayIconApp:
  	
             if not line and s.poll()  != None:
                 break
+                
             line=line.replace("\033[92m","")
             line=line.replace("\033[91m","")
             line=line.replace("\033[32m","")
@@ -259,7 +264,10 @@ class SystrayIconApp:
         self.make_menu()
         console.progress.set_fraction(0)
         gobject.source_remove( console.timeout_id )
-
+        
+        # Unlock logout session
+        os.system("gsettings set org.gnome.desktop.lockdown disable-log-out false")
+      
 if __name__ == "__main__":
 
     _program="migasfree-tray"
