@@ -10,7 +10,6 @@ import appindicator
 import optparse
 
 from migasfree_client.utils import get_config, get_hardware_uuid, get_mfc_computer_name
-from migasfree_client import settings
 
 gobject.threads_init()
 gtk.gdk.threads_init()
@@ -23,6 +22,10 @@ CMD_UPGRADE = "sudo migasfree-launcher"
 CMD_FORCE_UPGRADE = "sudo migasfree --update --force-upgrade"
 CMD_LABEL = "migasfree-label"
 CMD_APPS = "migasfree-apps"
+
+SCHEMA = "org.migasfree.tray"
+SHOW_CONSOLE = "show-console"
+
 
 def on_button_clicked( button, win):
     win.hide()
@@ -86,13 +89,16 @@ class SystrayIconApp:
     menu_force_upgrade = None
     menu_console = None
     is_upgrading =False
+    mode_console = False
 
     def __init__(self):
         self.tray = appindicator.Indicator('migasfree-1','migasfree-2',appindicator.CATEGORY_APPLICATION_STATUS)
         self.tray.set_status(appindicator.STATUS_ACTIVE)
         self.tray.set_attention_icon('attention_icon')
         self.tray.set_icon('migasfree')
+        self.mode_console = self.get_console()
         self.make_menu()
+        
 
     def make_menu(self):
         self.menu = gtk.Menu()
@@ -114,11 +120,18 @@ class SystrayIconApp:
         self.menu.append(self.menu_force_upgrade)
         self.menu_force_upgrade.connect('activate', self.force_upgrade)
 
+        self.menu.append(gtk.SeparatorMenuItem())
+
         self.menu_console= gtk.ImageMenuItem("Console")
         self.menu_console.set_image(self.get_image("migasfree-console"))
         self.menu_console.show()
         self.menu_console.connect('activate',self.show_console)
         self.menu.append(self.menu_console)
+
+        menu_mode_console = gtk.CheckMenuItem("Show always")
+        menu_mode_console.set_active( self.mode_console )
+        menu_mode_console.connect("activate", self.on_show_console)
+        self.menu.append(menu_mode_console)
 
         self.menu.append(gtk.SeparatorMenuItem())
 
@@ -144,6 +157,22 @@ class SystrayIconApp:
 
         self.menu.show_all()
         self.tray.set_menu(self.menu)
+
+    def set_console(self,value):
+        if value:
+            x="true"
+        else:
+            x="false"
+        os.system("gsettings set org.migasfree.console show-console %s" % x)	
+	
+    def get_console(self):
+        proc = subprocess.Popen(["gsettings", "get", "org.migasfree.console", "show-console"], stdout=subprocess.PIPE, shell=False)
+        (out, err) = proc.communicate()
+        return out.startswith("true")
+
+    def on_show_console(self, widget):
+        self.set_console(widget.get_active())
+        self.mode_console = widget.get_active()
 
     def get_image(self, name):
         img=gtk.Image()
@@ -189,6 +218,9 @@ class SystrayIconApp:
         self.run(CMD_TAGS)
 
     def run(self, command):
+        if self.mode_console :
+            console.show_all()
+            
         thr = threading.Thread(target= self.read_output, args=(console.textview, console.textbuffer, command))
         console.textbuffer.set_text("")
         thr.start()
