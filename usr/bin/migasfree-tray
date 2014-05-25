@@ -95,7 +95,7 @@ class SystrayIconApp:
         self.tray = appindicator.Indicator('migasfree-1','migasfree-2',appindicator.CATEGORY_APPLICATION_STATUS)
         self.tray.set_status(appindicator.STATUS_ACTIVE)
         self.tray.set_attention_icon('attention_icon')
-        self.tray.set_icon('migasfree')
+        self.tray.set_icon('migasfree-white')
         self.mode_console = self.get_console()
         self.make_menu()
 
@@ -197,7 +197,7 @@ class SystrayIconApp:
     def  show_about(self, widget):
         about_dialog = gtk.AboutDialog()
         about_dialog.set_destroy_with_parent (True)
-        about_dialog.set_icon_name ("migasfree-upgrade")
+        about_dialog.set_icon_name ("migasfree")
         about_dialog.set_name('migasfree-tray')
         about_dialog.set_version(_version)
         about_dialog.set_copyright("(C) 2010-2014 migasfree team")
@@ -234,7 +234,7 @@ class SystrayIconApp:
         self.make_menu()
         console.timeout_id = gobject.timeout_add(50, console.on_timeout, None)
 
-        self.tray.set_icon('migasfree-upgrade')
+        self.tray.set_icon('migasfree')
 
         s = subprocess.Popen(command.split(" "),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 
@@ -259,7 +259,7 @@ class SystrayIconApp:
             view.scroll_to_mark(buffer.get_insert(), 0.1)
             gtk.gdk.threads_leave()
 
-        self.tray.set_icon('migasfree')
+        self.tray.set_icon('migasfree-white')
         self.is_upgrading = False
         self.make_menu()
         console.progress.set_fraction(0)
