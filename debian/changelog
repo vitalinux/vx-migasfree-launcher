@@ -1,3 +1,15 @@
+vx-migasfree-launcher (1.13-1) unstable; urgency=low
+
+  * Wait inet connection 3 min.
+  * Check and get key "migasfree-repository" for apt-key
+  * Block and run update-notifier
+  * "Show console always" in dconf setting
+  * Capturing exceptions in read_output
+  * Lock logout session while console is running
+  * Changed icons
+
+ -- Alberto Gacías <alberto@migasfree.org>  Fri, 23 May 2014 19:14:47 +0200
+
 vx-migasfree-launcher (1.12-1) unstable; urgency=low
 
   * Bugfix: call migasfree-tags (closes #7)
