@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.14-1) unstable; urgency=low
+
+  * UnLock logout session while console is running
+
+ -- Alberto Gacías <alberto@migasfree.org>  Mon, 23 Jun 2014 18:40:47 +0200
+
 vx-migasfree-launcher (1.13-1) unstable; urgency=low
 
   * Wait inet connection 3 min.

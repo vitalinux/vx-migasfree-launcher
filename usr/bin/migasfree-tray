@@ -228,9 +228,6 @@ class SystrayIconApp:
     def read_output(self, view, buffer, command):
         self.is_upgrading = True
 
-        # Lock logout session
-        os.system("gsettings set org.gnome.desktop.lockdown disable-log-out true")
-
         self.make_menu()
         console.timeout_id = gobject.timeout_add(50, console.on_timeout, None)
 
@@ -265,8 +262,6 @@ class SystrayIconApp:
         console.progress.set_fraction(0)
         gobject.source_remove( console.timeout_id )
 
-        # Unlock logout session
-        os.system("gsettings set org.gnome.desktop.lockdown disable-log-out false")
 
 if __name__ == "__main__":
 
