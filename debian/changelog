@@ -1,3 +1,11 @@
+vx-migasfree-launcher (1.15-1) unstable; urgency=low
+
+  * Closes http://soporte.vitalinux.org/issues/84
+  * migasfree-tray script refactored (Gtk3 based)
+  * Dependencies changed (Gtk3 based)
+
+ -- Jose Antonio Chavarría <jachavar@gmail.com>  Wed, 9 Jul 2014 12:36:47 +0200
+
 vx-migasfree-launcher (1.14-1) unstable; urgency=low
 
   * UnLock logout session while console is running
