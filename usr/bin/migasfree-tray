@@ -21,7 +21,7 @@
 
 __author__ = ['Alberto Gacías', 'Jose Antonio Chavarría']
 __license__ = 'GPLv3'
-__version__ = '1.1'
+__version__ = '1.2'
 
 import os
 import sys
@@ -263,60 +263,64 @@ class SystrayIconApp(object):
         if self.mode_console:
             self.console.show_all()
 
-        thr = threading.Thread(
+        thread = threading.Thread(
             target=self.read_output,
-            args=(self.console.textview, self.console.textbuffer, command)
+            args=(self.console, command)
         )
         self.console.textbuffer.set_text("")
-        thr.start()
+        thread.start()
 
-    def read_output(self, view, buffer, command):
-        encoding = locale.getpreferredencoding()
-        utf8conv = lambda x : unicode(x, encoding).encode('utf8')
-
+    def read_output(self, console, command):
         self.is_upgrading = True
 
         self.menu_force_upgrade.set_sensitive(False)
         self.console.timeout_id = GObject.timeout_add(
-            50, 
-            self.console.on_timeout, 
+            50,
+            self.console.on_timeout,
             None
         )
 
         self.tray.set_icon('migasfree')
 
-        s = subprocess.Popen(
+        _process = subprocess.Popen(
             command.split(" "),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT
         )
 
-        while s.returncode == None:
+        while _process.returncode == None:
             try:
-                line = s.stdout.readline()
+                _line = _process.stdout.readline()
             except:
                 pass
 
-            if not line and s.poll() != None:
+            if not _line and _process.poll() != None:
                 break
 
-            line = line.replace("\033[92m", "")
-            line = line.replace("\033[91m", "")
-            line = line.replace("\033[32m", "")
-            line = line.replace("\033[0m", "")
+            _line = _line.replace("\033[92m", "")
+            _line = _line.replace("\033[91m", "")
+            _line = _line.replace("\033[32m", "")
+            _line = _line.replace("\033[0m", "")
 
-            Gdk.threads_enter()
-            iter = buffer.get_end_iter()
-            buffer.place_cursor(iter)
-            buffer.insert(iter, utf8conv(line))
-            view.scroll_to_mark(buffer.get_insert(), 0.1, False, 0, 0)
-            Gdk.threads_leave()
+            GObject.idle_add(self.add_text_to_console, console, _line)
 
         self.tray.set_icon('migasfree-white')
         self.is_upgrading = False
         self.menu_force_upgrade.set_sensitive(True)
         self.console.progress.set_fraction(0)
         GObject.source_remove(self.console.timeout_id)
+
+    def add_text_to_console(self, console, line):
+        _encoding = locale.getpreferredencoding()
+        _utf8conv = lambda x : unicode(x, _encoding).encode('utf8')
+
+        _iterator = console.textbuffer.get_end_iter()
+        console.textbuffer.place_cursor(_iterator)
+        console.textbuffer.insert(_iterator, _utf8conv(line))
+        console.textview.scroll_to_mark(
+            console.textbuffer.get_insert(),
+            0.1, False, 0, 0
+        )
 
 if __name__ == "__main__":
     parser = optparse.OptionParser(
@@ -353,6 +357,6 @@ if __name__ == "__main__":
         settings = Gio.Settings.new('com.ubuntu.update-notifier')
         settings.set_boolean('auto-launch', False)
 
+    GObject.threads_init()
     sia = SystrayIconApp(options)
-
     Gtk.main()
