@@ -21,7 +21,7 @@
 
 __author__ = ['Alberto Gacías', 'Jose Antonio Chavarría']
 __license__ = 'GPLv3'
-__version__ = '1.2'
+__version__ = '1.3'
 
 import os
 import sys
@@ -114,20 +114,31 @@ class SystrayIconApp(object):
 
         self.is_upgrading = False
 
+        self.icon = self.choose_icon()
+
         self.tray = AppIndicator.Indicator.new(
-            'migasfree-1',
-            'migasfree-2',
+            'migasfree-tray',
+            self.icon,
             AppIndicator.IndicatorCategory.APPLICATION_STATUS
         )
         self.tray.set_status(AppIndicator.IndicatorStatus.ACTIVE)
         self.tray.set_attention_icon('attention_icon')
-        self.tray.set_icon('migasfree-white')
+        self.tray.set_icon(self.icon)
 
         self.mode_console = self.get_console()
         self.make_menu()
 
         self.update_system()
         GObject.timeout_add(self.interval, self.update_system)
+
+    def choose_icon(self):
+        _icon = 'migasfree-idle-dark'
+
+        _settings = Gtk.Settings.get_default()
+        if _settings.get_property('gtk-theme-name') == 'Radiance':
+            _icon = 'migasfree-idle-light'
+
+        return _icon
 
     def make_menu(self):
         self.menu = Gtk.Menu()
@@ -230,6 +241,7 @@ class SystrayIconApp(object):
 
         _about_dialog.set_destroy_with_parent(True)
         _about_dialog.set_icon_name("migasfree")
+        _about_dialog.set_logo_icon_name('migasfree')
         _about_dialog.set_name(__file__)
         _about_dialog.set_version(__version__)
         _about_dialog.set_copyright("(C) 2010-2014 migasfree team")
@@ -275,8 +287,8 @@ class SystrayIconApp(object):
 
         self.menu_force_upgrade.set_sensitive(False)
         self.console.timeout_id = GObject.timeout_add(
-            50,
-            self.console.on_timeout,
+            50, 
+            self.console.on_timeout, 
             None
         )
 
@@ -304,7 +316,7 @@ class SystrayIconApp(object):
 
             GObject.idle_add(self.add_text_to_console, console, _line)
 
-        self.tray.set_icon('migasfree-white')
+        self.tray.set_icon(self.icon)
         self.is_upgrading = False
         self.menu_force_upgrade.set_sensitive(True)
         self.console.progress.set_fraction(0)
@@ -318,7 +330,7 @@ class SystrayIconApp(object):
         console.textbuffer.place_cursor(_iterator)
         console.textbuffer.insert(_iterator, _utf8conv(line))
         console.textview.scroll_to_mark(
-            console.textbuffer.get_insert(),
+            console.textbuffer.get_insert(), 
             0.1, False, 0, 0
         )
 
