@@ -1,3 +1,10 @@
+vx-migasfree-launcher (1.16-1) unstable; urgency=low
+
+  * Closes #9.
+  * Closes #10.
+
+ -- Jose Antonio Chavarría <jachavar@gmail.com>  Thu, 7 Aug 2014 14:16:47 +0200
+
 vx-migasfree-launcher (1.15-1) unstable; urgency=low
 
   * Closes http://soporte.vitalinux.org/issues/84
