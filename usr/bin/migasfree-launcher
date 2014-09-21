@@ -10,24 +10,6 @@ print config.get('server', 'localhost')
 _SERVER=$(python -c "$_PYTHON_CODE")
 
 
-#_SERVER_SOURCE_LIST="http://softlibre.unizar.es/ubuntu/archive"
-_SERVER_SOURCE_LIST="http://archive.ubuntu.com/ubuntu"
-
-function create_source_list(){
-    local _SRV=$1
-    cat > /etc/apt/sources.list<<EOF
-deb $_SRV precise main restricted
-deb $_SRV precise-updates main restricted
-deb $_SRV precise universe
-deb $_SRV precise-updates universe
-deb $_SRV precise multiverse
-deb $_SRV precise-updates multiverse
-deb $_SRV precise-security restricted main multiverse universe
-EOF
-
-}
-
-
 # Install broadcom 43xx without inet
 if [ -f $_FIRST ] ; then
   lspci -n | awk '{print $3}' | grep "14e4:43"
@@ -38,7 +20,6 @@ if [ -f $_FIRST ] ; then
     dpkg -i /opt/pkgs/vx-broadcom-43_*.deb
   fi
 fi
-
 
 
 # Wait inet connection (3 minutes max.)
@@ -69,8 +50,6 @@ fi
 # block update-notifier
 chmod 000 /etc/xdg/autostart/update-notifier.desktop || :
 
-# sources.list
-create_source_list $_SERVER_SOURCE_LIST
 
 if [ -f $_FIRST ] ; then
   _TAGS="$(cat $_FIRST)"
@@ -102,5 +81,5 @@ fi
 # run update-notifier
 if [ -f /usr/bin/update-notifier ] ; then
   sleep 5
-  exec su --login -c "/usr/bin/update-notifier --force-use-gksu" $_USER &> /dev/null & 
+  exec su --login -c "/usr/bin/update-notifier --force-use-gksu" $_USER &> /dev/null &
 fi

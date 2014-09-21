@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.18-1) unstable; urgency=low
+
+  *  removed /etc/apt/sources.list configuration (close #12)
+
+ -- Alberto Gacías <alberto@migasfree.org>  Sun, 21 Sep 2014 09:30:47 +0200
+
 vx-migasfree-launcher (1.17-1) unstable; urgency=low
 
   * never prompt upgrade to trusty.
