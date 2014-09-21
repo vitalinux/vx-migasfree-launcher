@@ -45,6 +45,7 @@ chmod 000 /etc/xdg/autostart/update-notifier.desktop || :
 
 
 if [ -f $_FIRST ] ; then
+  rm /etc/apt/sources.list
   _TAGS="$(cat $_FIRST)"
   if [ -z $_TAGS ] ; then
     _TAGS='""'
