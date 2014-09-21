@@ -39,13 +39,6 @@ do
 done
 rm /tmp/inet_connection
 
-# Check and get key "migasfree-repository"
-apt-key list|grep uid|grep 'migasfree-repository' > /dev/null
-if [ $? == 1 ] ; then
-    echo "Obteniendo la clave publica de los repositorios del servidor: $_SERVER"
-    wget -qO - $_SERVER/get_key_repositories | apt-key add -
-fi
-
 
 # block update-notifier
 chmod 000 /etc/xdg/autostart/update-notifier.desktop || :
