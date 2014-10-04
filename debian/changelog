@@ -1,6 +1,12 @@
 vx-migasfree-launcher (1.18-1) unstable; urgency=low
 
-  *  removed /etc/apt/sources.list configuration (close #12)
+  * Removed /etc/apt/sources.list configuration (close #12)
+  * Added depend migasfree-client (>=4.5)
+  * Removed X-GNOME-Autostart-Delay=60
+  * BugFix: Locks PMS. We stop/start cron and do: chmod 000 to /usr/bin/update-notifier
+    and /usr/bin/jockey-gtk (close #84)
+  * firstrun: now only comunicate tags.
+  * Improved restricted formats text.
 
  -- Alberto Gacías <alberto@migasfree.org>  Sun, 21 Sep 2014 09:30:47 +0200
 

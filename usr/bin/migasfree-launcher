@@ -1,4 +1,19 @@
 #!/bin/bash
+
+stop cron > /dev/null
+
+# block update-notifier
+if [ -f /usr/bin/update-notifier ] ; then
+  chmod 000 /usr/bin/update-notifier
+  chmod 000 /etc/xdg/autostart/update-notifier.desktop || :
+fi
+
+# block jockey-gtk
+if [ -f /usr/bin/jockey-gtk ] ; then
+  chmod 000 /usr/bin/jockey-gtk
+  chmod 000 /etc/xdg/autostart/jockey-gtk.desktop || :
+fi
+
 _FIRST=/var/tmp/migasfree/first-tags.conf
 _USER=`python -c "from migasfree_client import utils;print utils.get_graphic_user(utils.get_graphic_pid()[0])"`
 
@@ -9,6 +24,11 @@ print config.get('server', 'localhost')
 "
 _SERVER=$(python -c "$_PYTHON_CODE")
 
+if [ -f $_FIRST ] ; then
+  _IS_FIRST_RUN="1"
+else
+  _IS_FIRST_RUN="0"
+fi
 
 # Install broadcom 43xx without inet
 if [ -f $_FIRST ] ; then
@@ -33,19 +53,18 @@ do
     else
       # No hay conexión al servidor y salimos.
       echo "--------------------------------"
-      echo "No hay conexion con $_SERVER_SOURCE_LIST. Se cancela el primer arranque."
+      echo "No hay conexion con $_SERVER_SOURCE_LIST. Se cancela."
       exit 1
     fi
 done
 rm /tmp/inet_connection
 
 
-# block update-notifier
-chmod 000 /etc/xdg/autostart/update-notifier.desktop || :
-
-
 if [ -f $_FIRST ] ; then
-  rm /etc/apt/sources.list
+  # remove /etc/apt/sources.list
+  if [ -f /etc/apt/sources.list ] ; then
+    rm /etc/apt/sources.list
+  fi
   _TAGS="$(cat $_FIRST)"
   if [ -z $_TAGS ] ; then
     _TAGS='""'
@@ -56,15 +75,18 @@ if [ -f $_FIRST ] ; then
     /usr/bin/restrictedformats
   else
     echo "--------------------------------"
-    echo "Configurando sabor: $_TAGS"
-    /usr/bin/migasfree-tags --set $_TAGS
+    echo "Informar de los tags: $_TAGS"
+    /usr/bin/migasfree-tags --communicate $_TAGS
+    echo "--------------------------------"
+    echo "Actualizando..."
+    /usr/bin/migasfree --update
     echo "--------------------------------"
     echo "Instalando formatos  restrictivos ..."
     /usr/bin/restrictedformats
-    mv $_FIRST $_FIRST.save
     echo "--------------------------------"
-
+    mv $_FIRST $_FIRST.save
   fi
+
 else
   echo "--------------------------------"
   echo "Actualizando el sistema ..."
@@ -72,8 +94,19 @@ else
   echo "--------------------------------"
 fi
 
+
 # run update-notifier
 if [ -f /usr/bin/update-notifier ] ; then
-  sleep 5
+  chmod 755 /usr/bin/update-notifier
   exec su --login -c "/usr/bin/update-notifier --force-use-gksu" $_USER &> /dev/null &
 fi
+
+# run jockey-gtk
+if [ -f /usr/bin/jockey-gtk ]; then
+  chmod 755 /usr/bin/jockey-gtk
+  if [ "$_IS_FIRST_RUN" = "1" ] ; then
+    exec su --login -c "exec jockey-gtk --check" $_USER &> /dev/null &
+  fi
+fi
+
+start cron > /dev/null
