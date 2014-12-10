@@ -1,7 +1,5 @@
 #!/bin/bash
 
-stop cron > /dev/null
-
 # block update-notifier
 if [ -f /usr/bin/update-notifier ] ; then
   chmod 000 /usr/bin/update-notifier
@@ -15,6 +13,7 @@ if [ -f /usr/bin/jockey-gtk ] ; then
 fi
 
 _FIRST=/var/tmp/migasfree/first-tags.conf
+_CHANGE_NODE=/var/tmp/migasfree/change-node.conf
 _USER=`python -c "from migasfree_client import utils;print utils.get_graphic_user(utils.get_graphic_pid()[0])"`
 
 _PYTHON_CODE="from migasfree_client.utils import get_config
@@ -88,6 +87,13 @@ if [ -f $_FIRST ] ; then
   fi
 
 else
+  if [ -f $_CHANGE_NODE ] ; then
+    wget -qO - $_SERVER/get_key_repositories | apt-key add -
+    rm /root/.migasfree-keys/* || :
+    echo "Y"|LC_ALL=C migasfree --register
+    migasfree-tags --communicate $(cat $_CHANGE_NODE) || :
+    mv $_CHANGE_NODE $_CHANGE_NODE.save || :
+  fi
   echo "--------------------------------"
   echo "Actualizando el sistema ..."
   /usr/bin/migasfree --update
@@ -109,4 +115,3 @@ if [ -f /usr/bin/jockey-gtk ]; then
   fi
 fi
 
-start cron > /dev/null
