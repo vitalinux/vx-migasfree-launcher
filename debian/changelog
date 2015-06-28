@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.20-1) unstable; urgency=low
+
+  * BugFix: Two Tags selected in create-iso (https://github.com/migasfree/migasfree-launcher/issues/14)
+
+ -- Alberto Gacías <alberto@migasfree.org>  Sun, 28 Jun 2015 09:09:47 +0200
+
 vx-migasfree-launcher (1.19-1) unstable; urgency=low
 
   * Communicate Tags to node change.
