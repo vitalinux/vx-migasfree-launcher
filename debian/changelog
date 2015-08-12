@@ -1,3 +1,9 @@
+vx-migasfree-launcher (1.21-1) unstable; urgency=low
+
+  * Refactoring: Now it uses migasfree-launcher (close #13)
+
+ -- Alberto Gacías <alberto@migasfree.org>  Tue, 11 Aug 2015 10:07:47 +0200
+
 vx-migasfree-launcher (1.20-1) unstable; urgency=low
 
   * BugFix: Two Tags selected in create-iso (https://github.com/migasfree/migasfree-launcher/issues/14)

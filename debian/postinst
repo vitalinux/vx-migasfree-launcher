@@ -21,7 +21,6 @@ set -e
 case "$1" in
     configure)
         vx-divert-add $DPKG_MAINTSCRIPT_PACKAGE
-        chmod 0440 /etc/sudoers.d/vx-migasfree-launcher
 
     ;;
 
