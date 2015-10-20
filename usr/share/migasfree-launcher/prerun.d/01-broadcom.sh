@@ -15,11 +15,10 @@ if [ -f $_FIRST ] ; then
     if [ $_retries -le 18 ] ; then
       sleep 10 # 18*10" = 3 min.
       let _retries=_retries+1
-      echo $_retries
     else
       # No hay conexión al servidor y salimos.
       echo "--------------------------------"
-      echo "No hay conexion con $_SERVER_SOURCE_LIST. Se cancela."
+      echo "No hay conexion con $_SERVER. Se cancela."
       exit 1
     fi
   done
