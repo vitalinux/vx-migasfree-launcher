@@ -20,8 +20,7 @@ set -e
 
 case "$1" in
     configure)
-        vx-divert-add $DPKG_MAINTSCRIPT_PACKAGE
-
+        vx-divert-add $DPKG_MAINTSCRIPT_PACKAGE || :
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
