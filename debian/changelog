@@ -1,3 +1,10 @@
+vx-migasfree-launcher (1.22-1) unstable; urgency=low
+
+  * Changed package info (control file).
+  * Fixed URL support.
+
+ -- Jose Antonio Chavarría <jachavar@gmail.com>  Tue, 23 Jan 2018 08:05:47 +0100
+
 vx-migasfree-launcher (1.21-1) unstable; urgency=low
 
   * Refactoring: Now it uses migasfree-launcher (close #13)
