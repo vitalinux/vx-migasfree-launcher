@@ -3,12 +3,11 @@ Section: utils
 Priority: extra
 Maintainer: Alberto Gacías <alberto@migasfree.org>
 Build-Depends: debhelper (>= 8.0.0)
-Standards-Version: 3.9.3
-Homepage: https://github.com/agacias/vx-migasfree-launcher
+Standards-Version: 3.9.7
+Homepage: https://github.com/vitalinux/vx-migasfree-launcher
 
 Package: vx-migasfree-launcher
 Architecture: all
 Pre-Depends: migasfree-launcher (>= 1.8), sudo
 Depends: ${misc:Depends}, python, python-gi, vx-utils
-Description: migasfree launcher
- migasfree launcher in graphic session
+Description: migasfree launcher wrapper
