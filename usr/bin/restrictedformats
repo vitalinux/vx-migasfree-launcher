@@ -1,7 +1,8 @@
 #!/bin/bash
-#https://help.ubuntu.com/community/RestrictedFormats#Easy_Install
 
-_text="
+# https://help.ubuntu.com/community/RestrictedFormats#Easy_Install
+
+_TEXT="
 Vitalinux no incluye por defecto software propietario. Sin
 embargo puede necesitar ejecutar formatos no libres, tales
 como DVD, MP3, Quicktime, y formatos de Windows Media.
@@ -16,29 +17,28 @@ así como el resto del software anteriormente mencionado?
 del país. Por favor, obtenga asesoramiento jurídico si no está seguro si una patente
 o restricción particular se aplica a un formato de medios que desea utilizar.</span>
 "
+_TITLE="Formatos restrictivos"
 
-_cmd="zenity --question --title 'Formatos restrictivos' --no-wrap --text '$_text'"
-su -c "$_cmd" $SUDO_USER
-if [ $? == 0 ] ; then
+zenity --question --title "$_TITLE" --no-wrap --text "$_TEXT" 2> /dev/null
+if [ $? -eq 0 ]
+then
     # Aceptar mscorefonts-eula
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
 
     # Reinstalar ttf-mscorefonts-installer
     dpkg -l ttf-mscorefonts-installer>/dev/null
-    if [ $? = 0 ] ; then
+    if [ $? -eq 0 ]
+    then
         apt-get --reinstall install ttf-mscorefonts-installer
     fi
 
     # Instalar ubuntu-restricted-extra
     apt-get install --force-yes --assume-yes ubuntu-restricted-extras
-
-    # Instalar libdvdread4
-    /usr/share/doc/libdvdread4/install-css.sh
 else
-    _text="
-Si necesita más adelante instalar este software ejecute
+    _TEXT="
+Si necesita más adelante instalar este software, ejecute
 el comando:
     <b>sudo restrictedformats</b>
 "
-    zenity --info --title 'Formatos restrictivos' --no-wrap --text "$_text"
+    zenity --info --title "$_TITLE" --no-wrap --text "$_TEXT" 2> /dev/null
 fi
