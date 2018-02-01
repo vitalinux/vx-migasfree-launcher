@@ -2,8 +2,9 @@ vx-migasfree-launcher (1.22-1) unstable; urgency=low
 
   * Changed package info (control file).
   * Fixed URL support.
+  * Adapted restrictedformats script to Xenial
 
- -- Jose Antonio Chavarría <jachavar@gmail.com>  Tue, 23 Jan 2018 08:05:47 +0100
+ -- Jose Antonio Chavarría <jachavar@gmail.com>  Thu, 1 Feb 2018 09:44:47 +0100
 
 vx-migasfree-launcher (1.21-1) unstable; urgency=low
 
